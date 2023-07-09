@@ -1,0 +1,73 @@
+import unittest
+from unittest.mock import patch
+from shop import customer_options, get_item_from_shop, can_customer_afford, MaximumAttemptException, purchase, exit_shop, shop_programme
+
+
+SHOP_ITEMS = {
+    'leggings': 98,
+    'trainers': 54,
+    'sandals': 49,
+    'jacket': 136
+}
+
+STARTING_AVAILABLE_MONEY = 100
+
+
+class TestCustomerOptions(unittest.TestCase):
+
+    @patch('builtins.input', return_value='purchase')
+    def test_purchase_option(self, mock_input):
+        self.assertEqual(customer_options(), 'purchase')
+
+    @patch('builtins.input', return_value='exit')
+    def test_exit_option(self, mock_input):
+        self.assertEqual(customer_options(), 'exit')
+
+    @patch('builtins.input', return_value='random word')
+    def test_invalid_option(self, mock_input):
+        with self.assertRaises(ValueError):
+            customer_options()
+
+
+class TestGetItemFromShop(unittest.TestCase):
+
+    @patch('builtins.input', return_value='leggings')
+    def test_get_item_from_shop_valid(self, mock_input):
+        item_name, item_price = get_item_from_shop(SHOP_ITEMS)
+        self.assertEqual(item_name, 'leggings')
+        self.assertEqual(item_price, 98)
+
+    @patch('builtins.input', return_value='invalid item')
+    def test_get_item_from_shop_invalid(self, mock_input):
+        item_name, item_price = get_item_from_shop(SHOP_ITEMS)
+        self.assertIsNone(item_name)
+        self.assertIsNone(item_price)
+
+
+class TestCanCustomerAfford(unittest.TestCase):
+
+    def test_can_customer_afford(self):
+        self.assertTrue(can_customer_afford(50, 100))
+        self.assertFalse(can_customer_afford(150, 100))
+
+
+
+
+class TestExitShop(unittest.TestCase):
+
+    @patch('builtins.print')
+    def test_exit_shop(self, mock_print):
+        exit_shop()
+        mock_print.assert_called_with('Thank you for your visit. Hope to see you next time.')
+
+
+class TestShopProgramme(unittest.TestCase):
+    @patch('builtins.print')
+    def test_shop_programme(self, mock_print):
+        shop_programme(SHOP_ITEMS)
+        mock_print.assert_called()
+
+
+if __name__ == '__main__':
+    unittest.main()
+

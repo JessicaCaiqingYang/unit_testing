@@ -1,0 +1,33 @@
+import unittest
+from division import divide, IncorrectInput
+
+class MyTestCase(unittest.TestCase):
+    def test_positive_numerator_and_denominator_integers(self):
+        self.assertEqual(divide(6,2), 3)
+
+    def test_positive_numerator_and_denominator_float(self):
+        self.assertEqual(divide(5.4, 2.7), 2)
+
+    def test_negative_numerator_and_denominator_integers(self):
+        self.assertEqual(divide(-3, -2), 6)
+
+    def test_negative_numerator_and_denominator_integers(self):
+        self.assertEqual(divide(-1.8, -0.6), 3.0)
+
+    def test_one_positive_one_negative_integers(self):
+        self.assertEqual(divide(3, -3), -1.0)
+
+    def test_one_positive_one_negative_float(self):
+        self.assertEqual(divide(-2.8, 1.4), -2.0)
+
+    def test_zero_division(self):
+        with self.assertRaises(ZeroDivisionError):
+            divide(6, 0)
+
+    def test_incorrect_input(self):
+        with self.assertRaises(IncorrectInput):
+            divide(3, "1")
+
+
+if __name__ == '__main__':
+    unittest.main()

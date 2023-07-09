@@ -1,0 +1,12 @@
+class IncorrectInput(Exception):
+    pass
+
+def divide(numerator, denominator):
+    if denominator == 0:
+        raise ZeroDivisionError
+    else:
+        try:
+            is_int = numerator/denominator
+            return numerator/denominator
+        except TypeError:
+            raise IncorrectInput("the input must be integer or float")

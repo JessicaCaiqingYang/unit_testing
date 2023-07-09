@@ -1,0 +1,85 @@
+SHOP_ITEMS = {
+    'leggings': 98,
+    'trainers': 54,
+    'sandals': 49,
+    'jacket': 136
+}
+
+STARTING_AVAILABLE_MONEY = 100
+
+
+def customer_options():
+    customer_option = input("Please select one of the following options: purchase, exit:\n")
+    if not customer_option.lower() in ("purchase", "exit"):
+        raise ValueError("invalid option")
+    return customer_option
+
+
+def purchase_or_exit(shop_items, customer_money, customer_option):
+    if customer_option == "purchase":
+        return purchase(shop_items, customer_money)
+    elif customer_option == "exit":
+        return exit_shop()
+    else:
+        raise ValueError("invalid input")
+
+
+def get_item_from_shop(shop_items):
+    item_name = input("What would you like to purchase? \n")
+    try:
+        item_price = shop_items[item_name]
+        return item_name, item_price
+    except KeyError:
+        print("invalid item")
+        return None, None
+
+
+def can_customer_afford(item_price, customer_money):
+    if customer_money >= item_price:
+        return True
+    return False
+
+
+class MaximumAttemptException(Exception):
+    pass
+
+
+def purchase(shop_items, customer_money):
+    customer_available_money = customer_money
+    attempt = 1
+    afford = False
+    while afford is False and attempt < 4:
+        item_name, item_price = get_item_from_shop(shop_items)
+        if item_name is not None and item_price is not None:
+            afford = can_customer_afford(item_price, customer_money)
+            if afford:
+                print(f"Here is your {item_name}.")
+                exit_shop()
+                return
+            extra_money = input("Do you have more money to add? Please input a number(minimum 0):\n")
+            customer_available_money += int(extra_money)
+        attempt += 1
+    exit_shop()
+    raise MaximumAttemptException("Maximum attempt 3")
+
+
+def exit_shop():
+    print("Thank you for your visit. Hope to see you next time.")
+
+
+def shop_programme(shop_items):
+    welcome_message = "Hello! Welcome to the shop. Here are our items to sell: \n"
+    counter = 1
+    for name, price in shop_items.items():
+        welcome_message += f"{counter}. {name}: £{price}; \n"
+        counter += 1
+    print(welcome_message)
+
+
+def main():
+    shop_programme(SHOP_ITEMS)
+    purchase_or_exit(SHOP_ITEMS, STARTING_AVAILABLE_MONEY, customer_options())
+
+
+if __name__ == '__main__':
+    main()
